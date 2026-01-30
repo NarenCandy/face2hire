@@ -8,17 +8,23 @@ import {connectDB} from "./lib/db.js";
 import cors from "cors";
 import {serve} from "inngest/express";
 import {inngest, functions} from "./lib/inngest.js";
+import { fileURLToPath } from "url";
+
+
+
+
 
 
 const app =express();
+const __filename = fileURLToPath(import.meta.url);
 
-const __dirname=path.resolve();
+const __dirname = path.dirname(__filename);
 
 //middleware
 app.use(express.json());
 
 //credentials means cookies
-app.use(cors({origin:"ENV.CLIENT_URL", credentials:true}));
+app.use(cors({origin:ENV.CLIENT_URL, credentials:true}));
 
 app.use("/api/inngest", serve({client:inngest, functions}))
 
@@ -32,13 +38,16 @@ app.get("/books",(req,res)=>{
 
 
 //make our app ready for deployment
-if(ENV.NODE_ENV==="production"){
-    app.use(express.static(path.join(__dirname,"../frontend/dist")))
-    app.get("/{*any}",(req,res)=>{
-        res.sendFile(path.join(__dirname,"../frontend","dist","index.html"))
-    })
+if (ENV.NODE_ENV === "production") {
+  const frontendPath = path.join(__dirname, "../../frontend/dist");
 
+  app.use(express.static(frontendPath));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  });
 }
+
 
 
 
