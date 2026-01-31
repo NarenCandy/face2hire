@@ -9,12 +9,17 @@ import { Toaster } from 'react-hot-toast'
 
 
 function App() {
-  const {isSignedIn} = useUser();
+  const {isSignedIn, isLoaded} = useUser();
+  //this will prevent the flicker effect
+
+  if(!isLoaded) return null;
  
 
   return (
     <>
     <Routes>
+      <Route path="/" element={!isSignedIn ? <HomePage /> : <Navigate to={"/dashboard"} />} />
+      <Route path="/dashboard" element={isSignedIn ? <DashboardPage /> : <Navigate to={"/"} />} />
   
       <Route path='/' element={<HomePage/>}/>
       
