@@ -39,7 +39,6 @@ const deleteUserFromDB= inngest.createFunction(
         await connectDB();
         const{id } = event.data;
         await User.deleteOne({clerkId:id});
-        await User.create(newUser);
         await deleteStreamUser(id.toString());
     }
 )
