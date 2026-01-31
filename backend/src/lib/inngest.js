@@ -25,10 +25,10 @@ const syncUser= inngest.createFunction(
             id:newUser.clerkId.toString(),
             name:newUser.name,
             image:newUser.profileImage,
-        },
-    )
-    }
-)
+        });
+        // challenge: you can add welcome email logic here later
+    } 
+);
 
 const deleteUserFromDB= inngest.createFunction(
     {
