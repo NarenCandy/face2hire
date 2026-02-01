@@ -49,6 +49,16 @@ export async function executeCode(language, code) {
     }
 
     const data = await response.json();
+    const compileStderr = data.compile?.stderr || "";
+    if (compileStderr) {
+
+      return {
+        
+        success: false,
+        output: data.compile?.stdout || "",
+        error: compileStderr,
+      };
+    }
 
     const output = data.run.output || "";
     const stderr = data.run.stderr || "";
