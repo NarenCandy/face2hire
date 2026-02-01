@@ -25,7 +25,7 @@ export async function createSession(req, res) {
         })
 
         //chat message
-        chatClient.channel("messaging", callId,{
+        const channel=chatClient.channel("messaging", callId,{
             name:`${problem} Session`,
             created_by_id:clerkId,
             members:[clerkId]
@@ -44,6 +44,7 @@ export async function getActiveSessions(_, res) {
     try{
         const sessions=await Session.find({status:"active"})
         .populate("host","name profileImage email clerkId")
+        .populate("participant","name profileImage email clerkId")
         .sort({createdAt:-1})
         .limit(20);
 
