@@ -34,7 +34,7 @@ export async function createSession(req, res) {
         res.status(201).json({session} );
     }
     catch(error){
-        console.error("Error creating session:", error.message);
+        console.error("Error creating session controller:", error.message);
         res.status(500).json({message:"Server error"});
     }
 }
@@ -51,7 +51,7 @@ export async function getActiveSessions(_, res) {
         res.status(200).json({sessions} );
     }
     catch(error){
-        console.log("Error fetching active sessions:", error.message);
+        console.log("Error in getactivesessions:", error.message);
         res.status(500).json({message:"Server error" });
     }
 }
@@ -86,7 +86,7 @@ export async function getSessionById(req, res) {
         res.status(200).json({session});
     }
     catch(error){
-        console.log("Error fetching session by id:", error.message);
+        console.log("Error get session by id:", error.message);
         res.status(500).json({message:"Server error" });
     }
     

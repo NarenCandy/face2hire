@@ -1,6 +1,5 @@
 import express from "express";
 import {protectRoute} from "../middleware/protectRoute.js";
-import { get } from "mongoose";
 import { createSession, getActiveSessions, getMyRecentSessions, getSessionById, joinSession, endSession } from "../controllers/sessionController.js";
 const router= express.Router();
 

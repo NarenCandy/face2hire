@@ -1,4 +1,4 @@
-import { getDifficultyBadgeClass } from "../lib/util.js";
+import { getDifficultyBadgeClass } from "../lib/util";
 function ProblemDescription({ problem, currentProblemId, onProblemChange, allProblems }) {
   return (
     <div className="h-full overflow-y-auto bg-base-200">
