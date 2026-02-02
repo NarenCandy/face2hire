@@ -2,6 +2,7 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { sessionApi } from "../api/sessions";
+import { data } from "react-router";
 
 export const useCreateSession = () => {
   const result = useMutation({
@@ -37,7 +38,9 @@ export const useSessionById = (id) => {
     queryKey: ["session", id],
     queryFn: () => sessionApi.getSessionById(id),
     enabled: !!id,
-    refetchInterval: 5000, // refetch every 5 seconds to detect session status changes
+    refetchInterval: (data)=>{
+      return data?.status === "active" && !data.participant ? 5000 : false;
+    }, // refetch every 5 seconds to detect session status changes
   });
 
   return result;

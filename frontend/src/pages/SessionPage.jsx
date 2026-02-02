@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { useEndSession, useJoinSession, useSessionById } from "../hooks/useSessions.js";
+import { useEndSession, useJoinSession, useSessionById } from "../hooks/useSessions";
 import { PROBLEMS } from "../data/problem";
 import { executeCode } from "../lib/piston";
 import Navbar from "../components/Navbar";
@@ -14,6 +14,7 @@ import OutputPanel from "../components/OutputPanel";
 import useStreamClient from "../hooks/useStreamClient";
 import { StreamCall, StreamVideo } from "@stream-io/video-react-sdk";
 import VideoCallUI from "../components/VideoCallUi";
+import { cache } from "react";
 
 function SessionPage() {
   const navigate = useNavigate();
@@ -22,7 +23,14 @@ function SessionPage() {
   const [output, setOutput] = useState(null);
   const [isRunning, setIsRunning] = useState(false);
 
-  const { data: sessionData, isLoading: loadingSession, refetch } = useSessionById(id);
+  const { data: sessionData, isLoading: loadingSession, refetch } = useSessionById(id,{
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
+    cacheTime: Infinity,
+  });
+  console.log('🔥 SESSION QUERY:', Date.now(), { sessionData: !!sessionData, isLoading: loadingSession });
 
   const joinSessionMutation = useJoinSession();
   const endSessionMutation = useEndSession();
@@ -54,7 +62,7 @@ function SessionPage() {
     joinSessionMutation.mutate(id, { onSuccess: refetch });
 
     // remove the joinSessionMutation, refetch from dependencies to avoid infinite loop
-  }, [session, user, loadingSession, isHost, isParticipant, id]);
+  },[session, user, loadingSession, isHost, isParticipant, id]);
 
   // redirect the "participant" when session ends
   useEffect(() => {
