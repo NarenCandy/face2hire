@@ -26,13 +26,13 @@ export const initializeStreamClient = async (user, token) => {
 };
 
 export const disconnectStreamClient = async () => {
-  if (client) return;
+  if (!client) return;
     try {
       await client.disconnectUser();
-      //client = null;
+      client = null;
     } catch (error) {
       console.error("Error disconnecting Stream client:", error);
-    } finally{
+    } finally {
       client = null;
     }
   

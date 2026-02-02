@@ -11,11 +11,21 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
   const [channel, setChannel] = useState(null);
   const [isInitializingCall, setIsInitializingCall] = useState(true);
 
+  //ai help resolve 
+  const callId= session?.callId;
+  const shouldConnect = !loadingSession && session && (isHost || isParticipant) && session.status!=="completed";
+
+  
+
   useEffect(() => {
     let videoCall = null;
     let chatClientInstance = null;
 
     const initCall = async () => {
+      //ai help resolve
+      if(!callId || !shouldConnect) return;
+
+
       if (!session?.callId) return;
       if (!isHost && !isParticipant) return;
       if (session.status === "completed") return;
@@ -61,8 +71,9 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
         setIsInitializingCall(false);
       }
     };
+    if(shouldConnect) initCall();
 
-    if (session && !loadingSession) initCall();
+    //if (session && !loadingSession) initCall();
 
     // cleanup - performance reasons
     return () => {
@@ -77,7 +88,7 @@ function useStreamClient(session, loadingSession, isHost, isParticipant) {
         }
       })();
     };
-  }, [session, loadingSession, isHost, isParticipant]);
+  }, [callId, shouldConnect,loadingSession, isHost, isParticipant]);
 
   return {
     streamClient,
