@@ -24,20 +24,44 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 //middleware
-app.use(express.json());
+//app.use(express.json());
 
 //credentials means cookies
-app.use(cors({origin:ENV.CLIENT_URL, credentials:true}));
+//app.use(cors({origin:ENV.CLIENT_URL, credentials:true}));
 
-app.use(clerkMiddleware());//clerk auth middleware
+//app.use(clerkMiddleware());//clerk auth middleware
 
-app.use("/api/inngest", serve({client:inngest, functions}))
-app.use("/api/chat",chatRoutes);
-app.use("/api/sessions",sessionRoutes);
+//app.use("/api/inngest", serve({client:inngest, functions}))
+//app.use("/api/chat",chatRoutes);
+//app.use("/api/sessions",sessionRoutes);
+//
+//app.get("/health",(req,res)=>{
+//    res.status(200).json({msg:"api is healthy"});
+//})
+// 1. JSON parsing
+app.use(express.json());
 
-app.get("/health",(req,res)=>{
-    res.status(200).json({msg:"api is healthy"});
-})
+// 2. MANUAL CORS (before everything)
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', ENV.CLIENT_URL);
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  if (req.method === 'OPTIONS') return res.sendStatus(200);
+  next();
+});
+
+// 3. CLERK MIDDLEWARE (provides req.auth)
+app.use(clerkMiddleware());
+
+// 4. PUBLIC ROUTES
+app.get("/health", (req,res)=> res.status(200).json({msg:"api is healthy"}));
+
+// 5. PROTECTED API ROUTES (use YOUR protectRoute)
+app.use("/api/inngest", serve({client:inngest, functions}));
+app.use("/api/chat", chatRoutes);
+app.use("/api/sessions", sessionRoutes);
+
 
 
 
