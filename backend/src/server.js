@@ -42,11 +42,12 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 
 // 2. MANUAL CORS (before everything)
+// ✅ UPDATED CORS WITH CLERK HEADERS
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', ENV.CLIENT_URL);
   res.header('Access-Control-Allow-Credentials', 'true');
   res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
+  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,__session,__client_uat,__client_jwt');
   if (req.method === 'OPTIONS') return res.sendStatus(200);
   next();
 });
