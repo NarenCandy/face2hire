@@ -1,7 +1,6 @@
 
 
 import express from "express";
-import dotenv from "dotenv";
 import path from "path";
 import {ENV} from "./lib/env.js";
 import {connectDB} from "./lib/db.js";
@@ -23,46 +22,22 @@ const __filename = fileURLToPath(import.meta.url);
 
 const __dirname = path.dirname(__filename);
 
+//onst __dirname = path.resolve();
 //middleware
-//app.use(express.json());
-
-//credentials means cookies
-//app.use(cors({origin:ENV.CLIENT_URL, credentials:true}));
-
-//app.use(clerkMiddleware());//clerk auth middleware
-
-//app.use("/api/inngest", serve({client:inngest, functions}))
-//app.use("/api/chat",chatRoutes);
-//app.use("/api/sessions",sessionRoutes);
-//
-//app.get("/health",(req,res)=>{
-//    res.status(200).json({msg:"api is healthy"});
-//})
-// 1. JSON parsing
 app.use(express.json());
 
-// 2. MANUAL CORS (before everything)
-// ✅ UPDATED CORS WITH CLERK HEADERS
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', ENV.CLIENT_URL);
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization,__session,__client_uat,__client_jwt');
-  if (req.method === 'OPTIONS') return res.sendStatus(200);
-  next();
-});
+//credentials means cookies
+app.use(cors({origin:ENV.CLIENT_URL, credentials:true}));
 
-// 3. CLERK MIDDLEWARE (provides req.auth)
-app.use(clerkMiddleware());
+app.use(clerkMiddleware());//clerk auth middleware
 
-// 4. PUBLIC ROUTES
-app.get("/health", (req,res)=> res.status(200).json({msg:"api is healthy"}));
+app.use("/api/inngest", serve({client:inngest, functions}))
+app.use("/api/chat",chatRoutes);
+app.use("/api/sessions",sessionRoutes);
 
-// 5. PROTECTED API ROUTES (use YOUR protectRoute)
-app.use("/api/inngest", serve({client:inngest, functions}));
-app.use("/api/chat", chatRoutes);
-app.use("/api/sessions", sessionRoutes);
-
+app.get("/health",(req,res)=>{
+    res.status(200).json({msg:"api is healthy"});
+})
 
 
 
